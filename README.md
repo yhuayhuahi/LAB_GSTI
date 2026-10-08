@@ -9,7 +9,7 @@ Integrantes:
 
 
 Laboratorio Nro 3:
-LAB03/
+[LAB03/](LAB03/)
 
-> ![note] Nota importante
+> Nota
 > Por si hay mas laboratorios en donde necesitemos un repositorio, se creará un directorio por cada laboratorio, para mantener el orden y la organización del repositorio.
