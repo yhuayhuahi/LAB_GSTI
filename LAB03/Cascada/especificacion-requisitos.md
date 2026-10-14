@@ -100,3 +100,73 @@ Se establece la relación de precedencia técnica entre los requisitos funcional
 | **RF-10** (Historial de ventas) | **RF-09** (Registro de ventas) | El historial se alimenta directamente de las transacciones de venta procesadas. |
 | **RF-11, RF-12** (Reportes) | **RF-05, RF-08, RF-09, RF-10** | Los reportes consolidan la información generada por los movimientos de stock y ventas realizadas. |
 | **RF-13** (Panel de control - KPIs) | **RF-06, RF-07, RF-09, RF-12** | Los indicadores calculan métricas basadas en las existencias, alertas activas y ventas del día. |
+
+---
+
+## 5. Especificación de casos de uso
+
+### 5.0. Diagrama general de casos de uso (UML)
+
+![Diagrama de Casos de Uso UML](./CasosdeUso.png)
+
+*Figura 5.1: Diagrama de casos de uso del sistema de gestión de inventarios, representando las interacciones de los cuatro actores principales (Vendedor, Almacenero, Administrador y Dueño) junto con sus relaciones de inclusión (`<<include>>`) y extensión (`<<extend>>`).*
+
+---
+
+### 5.1. CU-01: Registrar venta de productos
+
+| Campo | Detalle |
+| :--- | :--- |
+| **Identificador** | CU-01 |
+| **Nombre** | Registrar venta de productos |
+| **Actores** | Vendedor |
+| **Requisitos asociados** | RF-04, RF-06, RF-09, RF-10 |
+| **Precondiciones** | 1. El vendedor ha iniciado sesión correctamente en el sistema (RF-01).<br>2. Existen productos registrados en el catálogo con existencias disponibles. |
+| **Postcondiciones** | 1. La transacción de venta queda registrada con fecha, hora, productos, cantidades y vendedor.<br>2. El stock disponible de los productos vendidos se descuenta automáticamente de forma inmediata. |
+| **Flujo principal** | 1. El vendedor ingresa al módulo de ventas.<br>2. Busca el producto por código o nombre mediante la función incluida `Buscar producto` (RF-04).<br>3. El sistema muestra los datos del producto, precio y existencias disponibles mediante `Verificar nivel de stock` (RF-06).<br>4. El vendedor ingresa la cantidad a vender y agrega el producto a la transacción.<br>5. El vendedor repite los pasos 2 a 4 para cada producto solicitado por el cliente.<br>6. El sistema calcula el total acumulado de la venta.<br>7. El vendedor confirma la transacción.<br>8. El sistema procesa la venta y ejecuta `Guardar historial de venta` (RF-10). |
+| **Flujos alternativos** | **Stock insuficiente:** Si la cantidad requerida es mayor al stock disponible, el sistema bloquea la adición y emite una advertencia.<br>**Alerta de stock bajo:** Si tras la verificación el stock es menor o igual al umbral mínimo, se emite una notificación en pantalla (RF-07).<br>**Cancelación de la venta:** El vendedor puede cancelar la operación antes de confirmarla sin afectar el inventario. |
+
+---
+
+### 5.2. CU-02: Registrar entrada y ajuste de stock
+
+| Campo | Detalle |
+| :--- | :--- |
+| **Identificador** | CU-02 |
+| **Nombre** | Registrar entrada y ajuste de stock |
+| **Actores** | Almacenero |
+| **Requisitos asociados** | RF-05, RF-06, RF-07, RF-08 |
+| **Precondiciones** | 1. El almacenero ha iniciado sesión con el rol correspondiente (RF-02).<br>2. El producto a ingresar o ajustar existe registrado en el catálogo. |
+| **Postcondiciones** | 1. Se actualiza el stock disponible del producto.<br>2. Se guarda la transacción de movimiento de inventario indicando tipo, cantidad, motivo y responsable. |
+| **Flujo principal** | 1. El almacenero ingresa al módulo de control de inventario.<br>2. Selecciona el producto del catálogo.<br>3. Selecciona el tipo de operación: "Entrada de stock" o "Ajuste manual".<br>4. Ingresa la cantidad de unidades.<br>5. En caso de ajuste manual, el sistema ejecuta `Registrar motivo de ajuste` obligando a seleccionar la causa (merma, rotura o conteo físico) (RF-08).<br>6. El almacenero confirma el registro.<br>7. El sistema actualiza el inventario y recalcula los niveles de stock en tiempo real. |
+| **Flujos alternativos** | **Omisión del motivo de ajuste:** Si el almacenero no selecciona una justificación en un ajuste manual, el sistema impide guardar la operación hasta completar el campo. |
+
+---
+
+### 5.3. CU-03: Gestionar catálogo de productos
+
+| Campo | Detalle |
+| :--- | :--- |
+| **Identificador** | CU-03 |
+| **Nombre** | Gestionar catálogo de productos |
+| **Actores** | Administrador |
+| **Requisitos asociados** | RF-01, RF-02, RF-03 |
+| **Precondiciones** | 1. El usuario se ha autenticado con credenciales de administrador. |
+| **Postcondiciones** | 1. El producto queda guardado, modificado o actualizado en la base de datos del catálogo. |
+| **Flujo principal** | 1. El administrador ingresa a la sección de catálogo de productos.<br>2. Selecciona la opción "Nuevo producto" o "Editar producto".<br>3. Ingresa los datos obligatorios: código, nombre, categoría, precio, stock inicial y stock mínimo.<br>4. El sistema valida los formatos numéricos y verifica la no duplicidad del código.<br>5. El administrador confirma la operación.<br>6. El sistema guarda la información y actualiza el catálogo visible. |
+| **Flujos alternativos** | **Código duplicado:** El sistema rechaza la creación si el código ingresado ya pertenece a otro producto activo.<br>**Datos inválidos:** Se resaltan en rojo los campos obligatorios incompletos o con valores negativos. |
+
+---
+
+### 5.4. CU-04: Consultar reportes e indicadores
+
+| Campo | Detalle |
+| :--- | :--- |
+| **Identificador** | CU-04 |
+| **Nombre** | Consultar reportes e indicadores |
+| **Actores** | Dueño |
+| **Requisitos asociados** | RF-11, RF-12, RF-13 |
+| **Precondiciones** | 1. El dueño ha iniciado sesión con el rol correspondiente.<br>2. Existen transacciones de venta e inventario registradas en el sistema. |
+| **Postcondiciones** | 1. El sistema despliega las métricas consolidadas o reportes en pantalla sin modificar los datos del sistema. |
+| **Flujo principal** | 1. El dueño ingresa al módulo de reportes o panel principal (dashboard).<br>2. Selecciona el tipo de consulta: reportes de movimientos, reportes de ventas o vista de indicadores clave (KPIs).<br>3. Aplica los filtros deseados (rango de fechas o categoría de producto).<br>4. El sistema calcula las métricas (valor del inventario, productos bajo mínimo y ventas del día) y genera la vista consolidada. |
+| **Flujos alternativos** | **Sin datos en el período:** Si no existen registros para las fechas seleccionadas, el sistema muestra el reporte en cero con el mensaje de aviso correspondiente. |
