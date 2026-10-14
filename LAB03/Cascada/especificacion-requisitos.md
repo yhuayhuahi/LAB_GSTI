@@ -1,14 +1,14 @@
-Especificación de Requisitos de Software (SRS) — Sistema de Gestión de Inventarios
+Especificación de Requisitos de Software — Sistema de Gestión de Inventarios
 
 **Proyecto:** Sistema de Gestión de Inventarios para Tienda Minorista 
 
-**Metodología:** Cascada (Waterfall) — Fase 1: Requisitos 
+**Metodología:** Cascada — Fase 1: Requisitos 
 
 **Autor / Analista de Requisitos:** Angelo Jair Vega Figueroa
 
 **Revisor / Arquitecto de Sistemas:** Daniel Wilston Chura Monroy
 
-**Estado:** En Progreso (Día 2)
+**Estado:** Finalizado (Día 4)
 
 ---
 
@@ -79,11 +79,13 @@ El sistema buscar lo siguiente:
 
 ### 3.2 Requisitos no funcionales (RNF)
 
-| ID | Categoría | Especificación del requisito | Criterio de verificación |
+| ID | Categoría | Descripción | Criterio de aceptación / Métrica |
 | :--- | :--- | :--- | :--- |
-| **RNF-01** | Rendimiento | El tiempo de respuesta para búsquedas de catálogo y consultas de stock no debe exceder los 2 segundos. | Tiempo de respuesta < 2,0 segundos. |
-| **RNF-02** | Seguridad e integridad | Las contraseñas deben almacenarse cifradas y las transacciones de ventas/stock deben ser atómicas. | Ninguna inconsistencia en inventario. |
-| **RNF-03** | Usabilidad | La interfaz debe ser clara, requiriendo un máximo de 15 minutos de capacitación para el operador. | Capacitación efectiva ≤ 15 minutos. |
+| **RNF-01** | Seguridad | Autenticación obligatoria con contraseñas encriptadas y control de acceso basado en roles (RBAC). | Ningún usuario no autenticado debe acceder a los módulos del sistema. |
+| **RNF-02** | Rendimiento | Tiempo de respuesta para búsquedas de productos y registros de venta inferior a 2 segundos. | Medido en condiciones de carga normal (hasta 20 usuarios concurrentes). |
+| **RNF-03** | Disponibilidad | El sistema debe estar operativo el 99% del tiempo durante el horario comercial. | Inactividad no programada menor a 5 horas mensuales. |
+| **RNF-04** | Usabilidad | Interfaz intuitiva y adaptable a dispositivos de escritorio y portátiles. | Un usuario nuevo debe operar el sistema tras menos de 10 minutos de inducción. |
+| **RNF-05** | Mantenibilidad | Estructura modular del código y documentación estandarizada en Markdown. | Cumplimiento del estándar de repositorio en GitHub. |
 
 ---
 
@@ -170,3 +172,122 @@ Se establece la relación de precedencia técnica entre los requisitos funcional
 | **Postcondiciones** | 1. El sistema despliega las métricas consolidadas o reportes en pantalla sin modificar los datos del sistema. |
 | **Flujo principal** | 1. El dueño ingresa al módulo de reportes o panel principal (dashboard).<br>2. Selecciona el tipo de consulta: reportes de movimientos, reportes de ventas o vista de indicadores clave (KPIs).<br>3. Aplica los filtros deseados (rango de fechas o categoría de producto).<br>4. El sistema calcula las métricas (valor del inventario, productos bajo mínimo y ventas del día) y genera la vista consolidada. |
 | **Flujos alternativos** | **Sin datos en el período:** Si no existen registros para las fechas seleccionadas, el sistema muestra el reporte en cero con el mensaje de aviso correspondiente. |
+
+---
+
+## 6. Reglas de negocio (RN)
+
+| Código | Nombre de la regla | Descripción |
+| :--- | :--- | :--- |
+| **RN-01** | Control de stock no negativo | El sistema no permitirá bajo ninguna circunstancia que las existencias de un producto sean menores a cero. |
+| **RN-02** | Venta sujeta a existencias | No se puede confirmar una venta si la cantidad solicitada supera el stock disponible en el catálogo. |
+| **RN-03** | Justificación obligatoria de ajustes | Todo movimiento manual de corrección de stock exige seleccionar un motivo registrado (merma, rotura o conteo físico). |
+| **RN-04** | Umbral de alerta de reabastecimiento | Se debe generar una notificación visual cuando el stock de un producto sea menor o igual a su stock mínimo configurado. |
+
+---
+
+## 7. Matriz de trazabilidad de requisitos
+
+La siguiente matriz establece el mapeo bidireccional entre las historias de usuario (HU), requisitos funcionales (RF), requisitos no funcionales (RNF), casos de uso (CU), módulos del sistema y reglas de negocio (RN), garantizando la cobertura del 100% del alcance del proyecto.
+
+| Historia de usuario (HU) | Requisito (RF / RNF) | Caso de uso (CU) | Módulo del sistema | Regla / Criterio asociado | Estado |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **HU-01** | **RF-01:** Autenticación de usuarios | CU-01, CU-02, CU-03, CU-04 | Seguridad y Acceso | RNF-01 (Seguridad) | Aprobado |
+| **HU-02** | **RF-02:** Control de acceso por roles | CU-01, CU-02, CU-03, CU-04 | Seguridad y Acceso | RNF-01 (Seguridad) | Aprobado |
+| **HU-03** | **RF-03:** Gestión de catálogo de productos | CU-03 | Catálogo de Productos | RN-01 (Stock no negativo) | Aprobado |
+| **HU-04** | **RF-04:** Búsqueda de productos | CU-01 | Ventas | RNF-02 (Tiempo respuesta < 2s) | Aprobado |
+| **HU-05** | **RF-05:** Registro de entrada de stock | CU-02 | Inventario y Almacén | RN-01 (Stock no negativo) | Aprobado |
+| **HU-06** | **RF-06:** Verificación de nivel de stock | CU-01, CU-02 | Inventario y Almacén | RN-02 (Venta sujeta a existencias) | Aprobado |
+| **HU-07** | **RF-07:** Alerta de stock bajo | CU-01, CU-02 | Inventario y Almacén | RN-04 (Umbral reabastecimiento) | Aprobado |
+| **HU-08** | **RF-08:** Ajuste manual de stock | CU-02 | Inventario y Almacén | RN-03 (Justificación obligatoria) | Aprobado |
+| **HU-09** | **RF-09:** Registro de ventas | CU-01 | Ventas | RN-01, RN-02 | Aprobado |
+| **HU-10** | **RF-10:** Historial de transacciones | CU-01 | Ventas | Trazabilidad de ventas | Aprobado |
+| **HU-11** | **RF-11:** Reportes de movimientos | CU-04 | Reportes e Indicadores | Filtro por rango de fechas | Aprobado |
+| **HU-12** | **RF-12:** Reportes consolidados de ventas | CU-04 | Reportes e Indicadores | RNF-02 (Rendimiento) | Aprobado |
+| **HU-13** | **RF-13:** Dashboard de indicadores (KPIs) | CU-04 | Reportes e Indicadores | RNF-02 (Rendimiento) | Aprobado |
+| **-** | **RNF-01:** Seguridad y RBAC | CU-01, CU-02, CU-03, CU-04 | Seguridad y Acceso | Encriptación y RBAC | Aprobado |
+| **-** | **RNF-02:** Rendimiento y tiempo de respuesta | CU-01, CU-04 | Transversal | Respuesta menor a 2s | Aprobado |
+| **-** | **RNF-03:** Disponibilidad del sistema | Todo el sistema | Infraestructura | 99% de operatividad comercial | Aprobado |
+| **-** | **RNF-04:** Usabilidad de interfaz | Todo el sistema | Interfaz de Usuario | Inducción menor a 10 minutos | Aprobado |
+| **-** | **RNF-05:** Mantenibilidad del código | Repositorio GitHub | Desarrollo | Estructura modular en Markdown | Aprobado |
+
+* **Enlace del documento:** [Matriz de Trazabilidad](https://docs.google.com/spreadsheets/d/1nzJVvHTSWDJ5YmYEKr4JfNYJ8SAVyJA-hbtgI6dhc6g/edit?usp=drive_web)
+
+---
+
+## 8. Procedimiento formal de control de cambios (Change Request)
+
+En cumplimiento del rigor metodológico del modelo en Cascada, una vez congelada la fase de requisitos no se admiten modificaciones arbitrarias sobre la línea base. Cualquier solicitud posterior de modificación, adición o eliminación debe procesarse formalmente mediante el estándar **CS-2026-001**.
+
+### Formulario oficial de Solicitud de Cambio (CR)
+
+#### 1. Información general de la solicitud
+| Campo | Detalle |
+| :--- | :--- |
+| **Código de Solicitud (ID)** | CS-2026-001 |
+| **Fecha de Solicitud** | 14/10/2026 |
+| **Solicitante** | [Nombre del Solicitante / Rol] |
+| **Prioridad** | [ ] Alta &nbsp;&nbsp;&nbsp; [ ] Media &nbsp;&nbsp;&nbsp; [ ] Baja |
+
+#### 2. Descripción del cambio solicitado
+* **Elemento / Requisito afectado:** [Especificar RF, RNF, CU o Módulo afectado, ej. RF-09 / CU-01]
+* **Descripción detallada del cambio:** [Describir de manera clara y precisa la modificación, adición o eliminación requerida en la línea base de requisitos.]
+* **Justificación del negocio:** [Explicar la razón comercial, operativa o legal que motiva la solicitud de cambio.]
+
+#### 3. Evaluación de impacto técnico y de proyecto
+| Área de impacto | Descripción del impacto | Estimación (Horas / Días) |
+| :--- | :--- | :--- |
+| **Impacto en Arquitectura / Diseño** | [Descripción del impacto en diagramas o BD] | [Estimación] |
+| **Impacto en Cronograma** | [Efecto sobre las fases subsiguientes] | [Días de retraso] |
+| **Impacto en Pruebas / Calidad** | [Nuevos casos de prueba requeridos] | [Estimación] |
+
+#### 4. Resolución y aprobación del Comité de Control de Cambios
+| Campo | Detalle |
+| :--- | :--- |
+| **Decisión Final** | [ ] Aprobado &nbsp;&nbsp;&nbsp; [ ] Rechazado &nbsp;&nbsp;&nbsp; [ ] Postergado |
+| **Observaciones / Condiciones** | [Detalles de la resolución o motivos de rechazo] |
+| **Nueva Versión de Baseline** | v1.1 |
+
+#### 5. Firmas de conformidad
+| Rol | Firma |
+| :--- | :--- |
+| **Firma del Solicitante** | ___________________________________ |
+| **Firma del Responsable del Proyecto** | ___________________________________ |
+
+* **Enlace del documento:** [Formulario de Solicitud de Cambio](https://docs.google.com/document/d/1NJa3GvB8k19-Ly1rUSScsLX6SzsTyncGtBQaiqc30BE/edit?usp=drive_web)
+
+---
+
+## 9. Acta de aprobación e hito GATE 1 (Congelamiento de requisitos)
+
+### Documento de Acta de Aprobación e Hito GATE 1
+
+* **Proyecto:** Sistema de Gestión de Inventarios
+* **Metodología:** Modelo en Cascada
+* **Línea Base (Baseline):** Versión 1.0 (Congelada)
+
+#### 1. Resumen del hito
+El presente documento formaliza la finalización satisfactoria de la fase de especificación y análisis de requisitos dentro del ciclo de vida en cascada para el sistema de gestión de inventarios. A partir de esta fecha, la línea base funcional y no funcional queda oficialmente congelada.
+
+#### 2. Entregables verificados y aprobados
+Se ha verificado la conformidad técnica y formal de los siguientes artefactos documentales:
+* **Especificación de Requisitos del Sistema (SRS):** 13 Requisitos Funcionales (RF-01 a RF-13) formalmente documentados con sus dependencias.
+* **Requisitos No Funcionales (RNF):** 5 Requisitos No Funcionales (RNF-01 a RNF-05) parametrizados bajo el estándar ISO/IEC 25010.
+* **Reglas de Negocio (RN):** 4 Reglas institucionales (RN-01 a RN-04) integradas a los flujos del sistema.
+* **Modelado UML:** Diagrama General de Casos de Uso en Draw.io y especificación de 4 Casos de Uso formales (CU-01 a CU-04).
+* **Matriz de Trazabilidad:** Matriz completa en Hoja de Cálculo vinculando HU, RF, CU, Módulo, RN/RNF.
+* **Procedimiento de Control de Cambios:** Protocolo formal mediante formulario Change Request (CR) para gestionar modificaciones posteriores.
+
+#### 3. Declaración formal de congelamiento
+El equipo del proyecto declara que la especificación de requisitos cumple con los criterios de completitud, consistencia, factibilidad y verificabilidad. No se admitirán modificaciones directas a la arquitectura ni a las funcionalidades sin la previa aprobación de una solicitud de cambio (CR) formal.
+
+Con la firma de este documento, se autoriza formalmente el inicio de la fase de diseño técnico y arquitectura del proyecto.
+
+#### 4. Conformidad y firmas de liderazgo del proyecto
+
+| Integrante 1 | Integrante 2 |
+| :---: | :---: |
+| ___________________________________ | ___________________________________ |
+| **Analista de Requisitos / Documentador** | **Diseñador Técnico / Desarrollador Lead** |
+
+* **Enlace del documento:** [Acta de Aprobación GATE 1](https://docs.google.com/document/d/1KDK81MnmsXvf2tVniI5wfZxBjQlEAjVQl_uVbdaK3Yc/edit?usp=drive_web)
