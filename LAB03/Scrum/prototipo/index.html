@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#101b31" />
+  <meta name="description" content="INVENTA: plataforma de control de productos, existencias, ventas y reportes para una tienda minorista." />
+  <title>INVENTA — Gestión de inventarios</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Menú principal">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+        <div class="brand-text"><strong>INVENTA<span class="brand-dot">.</span></strong><small>Gestión comercial</small></div>
+      </div>
+      <div class="workspace"><span class="workspace-avatar">TM</span><span><b>Tienda Minorista</b><small>Panel administrativo</small></span><span class="workspace-chevron">⌄</span></div>
+      <div class="section-label">MENÚ PRINCIPAL</div>
+      <nav class="nav-menu" aria-label="Secciones">
+        <button class="nav active" data-tab="resumen" type="button"><span class="nav-icon">▦</span><span>Inicio</span></button>
+        <button class="nav" data-tab="productos" type="button"><span class="nav-icon">▣</span><span>Productos</span></button>
+        <button class="nav" data-tab="movimientos" type="button"><span class="nav-icon">⇆</span><span>Movimientos</span></button>
+        <button class="nav" data-tab="ventas" type="button"><span class="nav-icon">▤</span><span>Ventas</span></button>
+        <button class="nav" data-tab="reportes" type="button"><span class="nav-icon">▥</span><span>Reportes</span></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="help-card"><div class="help-icon">✦</div><b>Todo bajo control</b><p>Consulta tus existencias, registra movimientos y supervisa las ventas desde un solo lugar.</p></div>
+        <div class="sidebar-profile"><div class="profile-avatar">A</div><span><b>Administrador</b><small>Modo local</small></span><span class="online-dot"></span></div>
+      </div>
+    </aside>
+    <div class="content-area">
+      <header class="topbar">
+        <div class="breadcrumb"><span>Espacio de trabajo</span><span class="crumb-sep">/</span><strong id="breadcrumbCurrent">Inicio</strong></div>
+        <div class="topbar-right"><span class="save-status"><span class="live-dot"></span> Datos guardados en este dispositivo</span><div class="top-avatar" title="Administrador">A</div></div>
+      </header>
+      <main class="main">
+        <section class="page active" id="resumen">
+          <div class="page-intro"><div><div class="eyebrow">PANEL PRINCIPAL <span class="eyebrow-dash"></span> <span id="todayDate"></span></div><h1>Resumen del negocio</h1><p class="muted">Consulta el estado de tu inventario y los últimos movimientos en un solo lugar.</p></div><div class="heading-actions"><button class="btn secondary" id="loadDemo" type="button">↻ &nbsp;Cargar datos de ejemplo</button><button class="btn" id="goToSales" type="button">＋ &nbsp;Nueva venta</button></div></div>
+          <div class="hero"><div class="hero-copy"><span class="hero-kicker"><span class="sparkle">✦</span> TU NEGOCIO, AL DÍA</span><h2>Más control.<br><em>Mejores decisiones.</em></h2><p>Gestiona tus productos, controla existencias y registra cada operación con facilidad.</p><button id="goToProducts" class="hero-button" type="button">Administrar productos <span>→</span></button></div><div class="hero-visual" aria-hidden="true"><div class="hero-circle one"></div><div class="hero-circle two"></div><div class="illustration-card"><div class="mini-chart-label"><span class="mini-dot"></span> CONTROL DE STOCK</div><div class="chart-bars"><i style="height:37%"></i><i style="height:57%"></i><i style="height:45%"></i><i style="height:76%"></i><i style="height:60%"></i><i style="height:90%"></i><i style="height:72%"></i></div><div class="illustration-foot"><span>Inventario actualizado</span><strong>✓</strong></div></div></div></div>
+          <div class="section-heading"><div><h2>Indicadores generales</h2><p>Información actualizada con cada operación.</p></div></div>
+          <div class="stats" id="stats"></div>
+          <div class="columns"><div class="panel"><div class="panel-head"><div><h2>Productos que requieren atención</h2><p>Artículos agotados o en nivel mínimo.</p></div><span class="panel-symbol alert-symbol">!</span></div><div id="lowStock"></div></div><div class="panel"><div class="panel-head"><div><h2>Actividad reciente</h2><p>Últimos movimientos de tu inventario.</p></div><span class="panel-symbol">↗</span></div><div id="latestMoves"></div></div></div>
+        </section>
+        <section class="page" id="productos"><div class="page-intro"><div><div class="eyebrow">CATÁLOGO</div><h1>Productos</h1><p class="muted">Crea, consulta, edita y elimina productos sin perder el historial de operaciones.</p></div><span class="page-chip">Gestión de catálogo</span></div>
+          <div class="panel"><div class="panel-head"><div><h2 id="productFormTitle">Registrar nuevo producto</h2><p>Completa la información del artículo.</p></div><span class="panel-symbol">＋</span></div><form id="productForm"><input type="hidden" id="editId"><div class="fields three"><label>Código de producto<input id="code" required maxlength="24" placeholder="P005"></label><label>Nombre del producto<input id="name" required maxlength="80" placeholder="Fideos 500 g"></label><label>Categoría<input id="category" required maxlength="50" placeholder="Abarrotes"></label><label>Precio de venta (S/)<input id="price" type="number" step="0.01" min="0" required placeholder="3.50"></label><label>Stock inicial<input id="initialStock" type="number" step="1" min="0" required placeholder="10"></label><label>Stock mínimo<input id="minStock" type="number" step="1" min="0" required placeholder="3"></label></div><div class="actions"><button class="btn" type="submit" id="saveProduct">＋ &nbsp;Guardar producto</button><button class="btn secondary hidden" type="button" id="cancelEdit">Cancelar edición</button></div></form></div>
+          <div class="panel"><div class="panel-head row-wrap"><div><h2>Catálogo registrado</h2><p>Busca por código, nombre o categoría. Los eliminados conservan su historial.</p></div><div class="catalog-tools"><label class="archived-toggle"><input type="checkbox" id="showDeleted"><span>Mostrar eliminados <span id="archivedCount"></span></span></label><label class="search-field"><span>⌕</span><input id="search" class="search" placeholder="Buscar producto..." aria-label="Buscar productos"></label></div></div><div class="tablewrap"><table><thead><tr><th>Código</th><th>Producto</th><th>Categoría</th><th>Precio</th><th>Existencias</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="productRows"></tbody></table></div></div>
+        </section>
+        <section class="page" id="movimientos"><div class="page-intro"><div><div class="eyebrow">CONTROL DE INVENTARIO</div><h1>Movimientos de stock</h1><p class="muted">Registra entradas y ajustes con trazabilidad de cada operación.</p></div><span class="page-chip">Entradas y ajustes</span></div>
+          <div class="panel"><div class="panel-head"><div><h2>Nuevo movimiento</h2><p>Selecciona el producto y registra el cambio.</p></div><span class="panel-symbol">⇆</span></div><form id="stockForm"><div class="fields three"><label>Producto<select id="stockProduct" required></select></label><label>Tipo de movimiento<select id="stockKind"><option value="Entrada">Entrada de mercadería (+)</option><option value="Ajuste">Ajuste manual</option></select></label><label>Cantidad<input id="stockAmount" type="number" min="1" step="1" required value="1"></label><label id="directionWrap" class="hidden">Tipo de ajuste<select id="adjustDirection"><option value="-1">Reducir existencias (−)</option><option value="1">Aumentar existencias (+)</option></select></label><label id="reasonWrap" class="hidden">Motivo obligatorio<select id="stockReason"><option value="">Seleccionar motivo</option><option value="Conteo físico">Conteo físico</option><option value="Merma">Merma</option><option value="Rotura">Rotura</option><option value="Otra corrección">Otra corrección</option></select></label></div><button class="btn" type="submit">Registrar movimiento →</button></form></div>
+          <div class="panel"><div class="panel-head"><div><h2>Historial de movimientos</h2><p>Entradas, salidas y ajustes registrados.</p></div></div><div class="tablewrap"><table><thead><tr><th>Fecha y hora</th><th>Producto</th><th>Operación</th><th>Unidades</th><th>Motivo</th></tr></thead><tbody id="stockRows"></tbody></table></div></div>
+        </section>
+        <section class="page" id="ventas"><div class="page-intro"><div><div class="eyebrow">PUNTO DE VENTA</div><h1>Registro de ventas</h1><p class="muted">Selecciona los artículos y confirma la venta para actualizar el inventario.</p></div><span class="page-chip">Descuento automático</span></div>
+          <div class="columns sales-layout"><div class="panel"><div class="panel-head"><div><h2>Nueva venta</h2><p>Agrega los productos al detalle.</p></div><span class="panel-symbol">＋</span></div><div class="fields two"><label>Producto<select id="saleProduct"></select></label><label>Cantidad<input id="saleQuantity" type="number" min="1" step="1" value="1"></label></div><button class="btn secondary" id="addToCart" type="button">＋ &nbsp;Agregar producto</button></div><div class="panel sale-help"><span class="panel-symbol">✓</span><h2>Ventas con control automático</h2><p>Al confirmar, se verifica la cantidad disponible, se descuentan las unidades y se registra un historial con fecha, hora y total.</p><div class="assurance"><span class="live-dot"></span> No permite ventas sin stock suficiente</div></div></div>
+          <div class="panel"><div class="panel-head"><div><h2>Detalle de la venta</h2><p>Revisa los productos antes de confirmar.</p></div></div><div class="tablewrap"><table><thead><tr><th>Producto</th><th>Cantidad</th><th>Precio unitario</th><th>Subtotal</th><th></th></tr></thead><tbody id="cartRows"></tbody></table></div><div class="checkout"><div><span class="checkout-label">TOTAL A COBRAR</span><strong id="cartTotal">S/ 0.00</strong></div><button class="btn" id="confirmSale" type="button">Confirmar venta →</button></div></div>
+          <div class="panel"><div class="panel-head"><div><h2>Historial de ventas</h2><p>Transacciones confirmadas y almacenadas.</p></div></div><div class="tablewrap"><table><thead><tr><th>Fecha y hora</th><th>Número de venta</th><th>Productos y cantidades</th><th>Total</th></tr></thead><tbody id="saleRows"></tbody></table></div></div>
+        </section>
+        <section class="page" id="reportes"><div class="page-intro"><div><div class="eyebrow">ANÁLISIS DE OPERACIONES</div><h1>Reportes</h1><p class="muted">Consulta los movimientos de inventario y las ventas registradas por período.</p></div><span class="page-chip">Consulta por fechas</span></div>
+          <div class="panel"><div class="panel-head"><div><h2>Filtrar período</h2><p>Selecciona el rango de fechas que deseas consultar.</p></div><button class="btn secondary mini" type="button" id="clearDates">Limpiar filtros</button></div><div class="fields two report-filters"><label>Fecha desde<input type="date" id="dateFrom"></label><label>Fecha hasta<input type="date" id="dateTo"></label></div></div>
+          <div class="stats" id="reportStats"></div><div class="panel"><div class="panel-head"><div><h2>Movimientos de inventario</h2><p>Entradas, ajustes y salidas por venta.</p></div><button class="btn secondary mini" type="button" id="exportMoves">↓ Exportar CSV</button></div><div class="tablewrap"><table><thead><tr><th>Fecha y hora</th><th>Producto</th><th>Operación</th><th>Unidades</th><th>Motivo</th></tr></thead><tbody id="reportMoveRows"></tbody></table></div></div>
+          <div class="panel"><div class="panel-head"><div><h2>Ventas del período</h2><p>Resumen consultivo de transacciones.</p></div></div><div class="tablewrap"><table><thead><tr><th>Fecha y hora</th><th>Productos</th><th>Total</th></tr></thead><tbody id="reportSaleRows"></tbody></table></div></div>
+        </section>
+        <footer class="footer"><span><strong>INVENTA</strong> · Gestión de inventarios</span><span>Versión de demostración local · Sin servidor ni usuarios reales</span></footer>
+      </main>
+    </div>
+  </div>
+  <dialog class="confirm-dialog" id="deleteDialog" aria-labelledby="deleteDialogTitle" aria-describedby="deleteProductDetail">
+    <form method="dialog" class="confirm-content">
+      <div class="confirm-symbol" aria-hidden="true">!</div>
+      <h2 id="deleteDialogTitle">¿Eliminar producto?</h2>
+      <strong id="deleteProductName" class="confirm-name"></strong>
+      <p id="deleteProductDetail"></p>
+      <div class="confirm-note">Se trata de una baja lógica para conservar la trazabilidad. El producto podrá restaurarse más adelante.</div>
+      <div class="confirm-actions"><button type="submit" value="cancel" class="btn secondary">Cancelar</button><button type="button" id="confirmDelete" class="btn danger-solid">Sí, eliminar producto</button></div>
+    </form>
+  </dialog>
+  <div id="toast" role="status" aria-live="polite" class="toast hidden"></div>
+  <script src="core.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
