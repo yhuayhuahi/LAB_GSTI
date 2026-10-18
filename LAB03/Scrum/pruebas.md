@@ -193,11 +193,12 @@ Durante la ejecución manual realizada el 17/10/2026 se obtuvieron dos capturas 
 | EP-01 | `evidencias/pruebas/01-consulta-existencias.png` | HU-06 | Adjuntada |
 | EP-02 | `evidencias/pruebas/02-reporte-movimientos.png` | HU-11 | Adjuntada |
 
+
 ### 5.1. Consulta de existencias
 
 La primera evidencia muestra la información de los productos registrados y permite comprobar que el sistema presenta las existencias actualizadas y sus respectivos estados.
 
-![Consulta de existencias](./evidencias/pruebas/01-consulta-existencias.png)
+![Consulta de existencias](evidencias/pruebas/01-consulta-existencias.PNG)
 
 **Figura 1.** Consulta de existencias y estados de stock del sistema INVENTA.
 
@@ -205,7 +206,7 @@ La primera evidencia muestra la información de los productos registrados y perm
 
 La segunda evidencia muestra los movimientos registrados durante las pruebas funcionales, permitiendo verificar las entradas de mercadería, ajustes de inventario y ventas.
 
-![Reporte de movimientos](./evidencias/pruebas/02-reporte-movimientos.png)
+![Reporte de movimientos](evidencias/pruebas/02-reporte-movimientos.PNG)
 
 **Figura 2.** Reporte de movimientos de inventario del sistema INVENTA.
 
