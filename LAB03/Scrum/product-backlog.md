@@ -35,7 +35,7 @@ Se utiliza la escala de estimación relativa de **1, 2, 3, 5 y 8 Story Points (S
 |---:|---|---|---|---|---:|---|---|---|
 | 1 | HU-03 | B | Registrar y editar productos | Must | 5 | Ninguna | Sprint 1 | Verificado |
 | 2 | HU-04 | B | Buscar productos por código o nombre | Must | 2 | HU-03 | Sprint 1 | Verificado |
-| 3 | HU-05 | C | Registrar entradas de stock | Must | 3 | HU-03 | Sprint 1 | Por verificar |
+| 3 | HU-05 | C | Registrar entradas de stock | Must | 3 | HU-03 | Sprint 1 | Verificado |
 | 4 | HU-06 | C | Consultar niveles y estados de stock | Must | 3 | HU-03, HU-05 | Sprint 1 | Verificado|
 | 5 | HU-09 | D | Registrar ventas y descontar existencias | Must | 5 | HU-03, HU-04, HU-06 | Sprint 2 | Verificado |
 | 6 | HU-10 | D | Consultar historial de ventas | Must | 3 | HU-09 | Sprint 2 | Verificado |
