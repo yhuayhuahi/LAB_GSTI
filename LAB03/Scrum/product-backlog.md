@@ -33,15 +33,15 @@ Se utiliza la escala de estimación relativa de **1, 2, 3, 5 y 8 Story Points (S
 
 | Orden | HU | Épica | Historia resumida | Prioridad | SP | Dependencias | Sprint previsto | Estado |
 |---:|---|---|---|---|---:|---|---|---|
-| 1 | HU-03 | B | Registrar y editar productos | Must | 5 | Ninguna | Sprint 1 | Por verificar |
-| 2 | HU-04 | B | Buscar productos por código o nombre | Must | 2 | HU-03 | Sprint 1 | Por verificar |
-| 3 | HU-05 | C | Registrar entradas de stock | Must | 3 | HU-03 | Sprint 1 | Por verificar |
-| 4 | HU-06 | C | Consultar niveles y estados de stock | Must | 3 | HU-03, HU-05 | Sprint 1 | Por verificar |
-| 5 | HU-09 | D | Registrar ventas y descontar existencias | Must | 5 | HU-03, HU-04, HU-06 | Sprint 2 | Por verificar |
-| 6 | HU-10 | D | Consultar historial de ventas | Must | 3 | HU-09 | Sprint 2 | Por verificar |
-| 7 | HU-07 | C | Generar alertas de stock bajo | Must | 2 | HU-06 | Sprint 2 | Por verificar |
-| 8 | HU-08 | C | Ajustar inventario con motivo obligatorio | Must | 3 | HU-03, HU-06 | Sprint 2 | Por verificar |
-| 9 | HU-11 | E | Reportar movimientos de inventario por período | Must | 5 | HU-05, HU-08, HU-09 | Sprint 2 | Por verificar |
+| 1 | HU-03 | B | Registrar y editar productos | Must | 5 | Ninguna | Sprint 1 | Verificado |
+| 2 | HU-04 | B | Buscar productos por código o nombre | Must | 2 | HU-03 | Sprint 1 | Verificado |
+| 3 | HU-05 | C | Registrar entradas de stock | Must | 3 | HU-03 | Sprint 1 | Verificado |
+| 4 | HU-06 | C | Consultar niveles y estados de stock | Must | 3 | HU-03, HU-05 | Sprint 1 | Verificado|
+| 5 | HU-09 | D | Registrar ventas y descontar existencias | Must | 5 | HU-03, HU-04, HU-06 | Sprint 2 | Verificado |
+| 6 | HU-10 | D | Consultar historial de ventas | Must | 3 | HU-09 | Sprint 2 | Verificado |
+| 7 | HU-07 | C | Generar alertas de stock bajo | Must | 2 | HU-06 | Sprint 2 | Verificado |
+| 8 | HU-08 | C | Ajustar inventario con motivo obligatorio | Must | 3 | HU-03, HU-06 | Sprint 2 | Verificado |
+| 9 | HU-11 | E | Reportar movimientos de inventario por período | Must | 5 | HU-05, HU-08, HU-09 | Sprint 2 | Verificado|
 | 10 | HU-01 | A | Autenticación de usuarios | Must | 5 | Mecanismo de autenticación | Backlog pendiente | Pendiente |
 | 11 | HU-02 | A | Control de acceso según roles | Must | 5 | HU-01 | Backlog pendiente | Pendiente |
 | 12 | HU-12 | E | Reportes de ventas por período y producto | Must | 5 | HU-09, HU-10 | Backlog pendiente | Pendiente |
