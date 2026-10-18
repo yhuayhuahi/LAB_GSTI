@@ -197,7 +197,7 @@ Durante la ejecución manual realizada el 17/10/2026 se obtuvieron dos capturas 
 
 La primera evidencia muestra la información de los productos registrados y permite comprobar que el sistema presenta las existencias actualizadas y sus respectivos estados.
 
-![Consulta de existencias](evidencias/pruebas/01-consulta-existencias.png)
+![Consulta de existencias](./evidencias/pruebas/01-consulta-existencias.png)
 
 **Figura 1.** Consulta de existencias y estados de stock del sistema INVENTA.
 
@@ -205,11 +205,9 @@ La primera evidencia muestra la información de los productos registrados y perm
 
 La segunda evidencia muestra los movimientos registrados durante las pruebas funcionales, permitiendo verificar las entradas de mercadería, ajustes de inventario y ventas.
 
-![Reporte de movimientos](evidencias/pruebas/02-reporte-movimientos.png)
+![Reporte de movimientos](./evidencias/pruebas/02-reporte-movimientos.png)
 
 **Figura 2.** Reporte de movimientos de inventario del sistema INVENTA.
-
-**Nota:** Estas capturas constituyen evidencias complementarias de las pruebas funcionales. No reemplazan las evidencias E01–E05 correspondientes a la documentación de los eventos Scrum.
 
 ### 5.3. Evidencias de los eventos Scrum
 
