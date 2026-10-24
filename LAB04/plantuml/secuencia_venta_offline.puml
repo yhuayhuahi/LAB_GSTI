@@ -1,0 +1,95 @@
+@startuml secuencia_venta_offline
+!theme plain
+autonumber
+skinparam roundcorner 8
+skinparam shadowing false
+skinparam responseMessageBelowArrow true
+
+title Diagrama de Secuencia UML — Venta en Mostrador con Modo Offline y Sincronización Idempotente
+
+actor "Estudiante Comprador" as Alumno #E1F5FE
+actor "Distribuidor (Vendedor)" as Vendedor #FFF3E0
+
+box "Nivel 1: Dispositivo Móvil (Punto de Venta)" #F3E5F5
+    participant "App Móvil\n(React + Capacitor)" as App #EDE7F6
+    database "IndexedDB\n(Almacenamiento Local)" as IDB #F8BBD0
+end box
+
+box "Nivel 2: Servidor Central (VPS Hostinger)" #E8F5E9
+    participant "Backend API\n(Node.js / Express)" as API #C8E6C9
+    database "PostgreSQL 16\n(Persistencia ACID)" as DB #A5D6A7
+end box
+
+== 1. Registro de Venta en Mostrador (Interacción Presencial) ==
+
+Alumno -> Vendedor: Solicita libro ("Simi Siminchis - Básico") y paga en efectivo (S/ 35.00)
+activate Vendedor
+
+Vendedor -> App: Ingresa DNI del alumno ("72451234") y selecciona título
+activate App
+
+App -> IDB: Consultar catálogo y stock local disponible
+activate IDB
+IDB --> App: Retorna producto (Precio: S/ 35.00, Comisión: S/ 7.00, Stock: 8)
+deactivate IDB
+
+App -> App: Validar disponibilidad de stock local (8 > 0)
+App -> App: Generar UUID v4 idempotente (clientSaleUuid)
+
+alt Caso A: Dispositivo Móvil SIN Conectividad a Internet (Modo Offline)
+    App -> IDB: INSERT en 'sales_outbox' (clientSaleUuid, status='PENDING_SYNC', total=35.00)
+    activate IDB
+    App -> IDB: UPDATE 'branch_stock' (decrementar 1 unidad disponible -> Stock: 7)
+    IDB --> App: Confirmación de almacenamiento local seguro
+    deactivate IDB
+
+    App -> App: Generar comprobante interno en formato PDF
+    App --> Vendedor: Muestra pantalla de éxito ("Venta resguardada localmente")
+    
+    Vendedor -> Alumno: Entrega libro físico y comprobante
+    note over App, IDB
+        La venta queda resguardada en el dispositivo móvil del distribuidor.
+        No se detiene la atención al público en caso de corte de señal móvil.
+    end note
+
+else Caso B: Reconexión de Red Detectada (Sincronización Diferida)
+    App -> App: Network Status Listener detecta conexión a internet (3G/4G)
+    
+    App -> IDB: SELECT * FROM 'sales_outbox' WHERE status='PENDING_SYNC'
+    activate IDB
+    IDB --> App: Retorna lote de ventas acumuladas offline
+    deactivate IDB
+
+    App -> API: POST /api/v1/sales/sync (payload: [salesBatch], Bearer Token)
+    activate API
+
+    API -> API: Verificar firma de Token JWT y Scope de Sede (enforceBranchScope)
+    
+    API -> DB: BEGIN TRANSACTION (Nivel de Aislamiento SERIALIZABLE)
+    activate DB
+
+    loop Por cada venta en el lote
+        API -> DB: INSERT INTO sales (...) ON CONFLICT (client_sale_uuid) DO NOTHING
+        API -> DB: INSERT INTO sale_items (...)
+        API -> DB: UPDATE branch_stock SET sold_quantity = sold_quantity + 1, available_quantity = available_quantity - 1
+    end loop
+
+    API -> DB: COMMIT TRANSACTION
+    DB --> API: Confirmación de persistencia transaccional
+    deactivate DB
+
+    API --> App: HTTP 200 OK (synced_uuids: [clientSaleUuid, ...])
+    deactivate API
+
+    App -> IDB: UPDATE 'sales_outbox' SET status='SYNCED' WHERE uuid IN (synced_uuids)
+    activate IDB
+    IDB --> App: Estado local actualizado
+    deactivate IDB
+
+    App --> Vendedor: Notificación sutil ("Sincronización completada exitosamente")
+end
+
+deactivate App
+deactivate Vendedor
+
+@enduml

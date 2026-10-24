@@ -1,0 +1,54 @@
+@startuml arquitectura_componentes
+!theme plain
+skinparam roundcorner 8
+skinparam shadowing false
+skinparam componentStyle uml2
+
+title Diagrama de Componentes y Despliegue UML — Arquitectura del Sistema (Editorial QSY)
+
+package "Nivel 1: Clientes y Dispositivos de Usuario" #F0F4F8 {
+    node "Dispositivos Móviles de Distribuidores\n(Android 10+ / Teléfonos de Punto de Venta)" as NodeMobile {
+        component "App Móvil QSY\n(React 19 + TypeScript + Capacitor)" as CompMobileApp
+        database "IndexedDB Local\n(Outbox de Ventas & Stock Offline)" as CompIndexedDB
+        CompMobileApp <--> CompIndexedDB : Persistencia local sin red
+    }
+
+    node "Estación de Oficina / Remoto\n(Laptops / PCs Navegador Moderno)" as NodeAdmin {
+        component "Web SPA Administrativa\n(React 19 + Tailwind CSS)" as CompAdminSPA
+    }
+}
+
+cloud "Canal de Red Pública\n(Datos Móviles 3G/4G / Internet)" as NetCloud
+
+package "Nivel 2: Servidor Central (VPS Hostinger - Ubuntu 22.04 LTS)" #E8F5E9 {
+    component "Proxy Inverso Nginx\n(Terminación SSL Let's Encrypt / Rate Limiting)" as CompNginx
+
+    package "Contenedor Docker: qsy_backend_api" #FFFDE7 {
+        component "API RESTful Express\n(Node.js 26 Alpine + TypeScript)" as CompAPI
+        component "Módulo Auth & RBAC\n(JWT + Bcrypt)" as CompAuth
+        component "Módulo Comercial & Ventas\n(Control de Consignación & Comisiones)" as CompSales
+        component "Módulo Inventario Multisede\n(Stock y Despachos)" as CompStock
+
+        CompAPI --> CompAuth
+        CompAPI --> CompSales
+        CompAPI --> CompStock
+    }
+
+    package "Contenedor Docker: qsy_postgres_db" #E0F2F1 {
+        database "PostgreSQL 16\n(Motor Relacional ACID / Transacciones)" as CompPostgres
+    }
+
+    database "SQLite 3 Embebido\n(Testing Local / Modo de Respaldo)" as CompSQLite
+}
+
+' Conexiones de red
+CompMobileApp ..> NetCloud : Peticiones HTTPS / JSON con reintentos
+CompAdminSPA ..> NetCloud : Peticiones HTTPS / JSON estándar
+NetCloud --> CompNginx : Tráfico TLS Seguro (Puerto 443)
+
+' Enrutamiento interno en el servidor
+CompNginx --> CompAPI : Proxy inverso (Puerto interno 3000)
+CompAPI --> CompPostgres : Pool de conexiones TCP (Puerto interno 5432)
+CompAPI ..> CompSQLite : Conmutable en entorno local/test
+
+@enduml

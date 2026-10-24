@@ -1,0 +1,190 @@
+@startuml clases_sistema_qsy
+!theme plain
+skinparam classAttributeIconSize 0
+skinparam monochrome false
+skinparam roundcorner 8
+skinparam shadowing false
+skinparam handwritten false
+
+title Diagrama de Clases UML — Sistema de Gestión Comercial y Existencias (Editorial QSY)
+
+package "Módulo de Seguridad y Usuarios" #F0F4F8 {
+    class Role {
+        - id: String
+        - name: String
+        - description: String
+        - createdAt: DateTime
+        + getPermissions(): List<String>
+    }
+
+    class User {
+        - id: String
+        - email: String
+        - passwordHash: String
+        - fullName: String
+        - roleId: String
+        - branchId: String
+        - observations: String
+        - isActive: Boolean
+        - createdAt: DateTime
+        + authenticate(password: String): Boolean
+        + hasPermission(permission: String): Boolean
+        + getBranchScope(): String
+    }
+}
+
+package "Módulo de Sedes y Catálogo" #E8F5E9 {
+    class Branch {
+        - id: String
+        - code: String
+        - name: String
+        - address: String
+        - phone: String
+        - managerName: String
+        - observations: String
+        - isActive: Boolean
+        - createdAt: DateTime
+        + getAvailableStock(): List<BranchStock>
+        + calculateDailySales(date: Date): Decimal
+    }
+
+    class Product {
+        - id: String
+        - code: String
+        - title: String
+        - educationLevel: String
+        - isbn: String
+        - publicPrice: Decimal
+        - fixedCommission: Decimal
+        - observations: String
+        - isActive: Boolean
+        - createdAt: DateTime
+        + getEditorialMargin(): Decimal
+        + validateTariffRule(): Boolean
+    }
+
+    class BranchStock {
+        - id: String
+        - branchId: String
+        - productId: String
+        - receivedQuantity: Integer
+        - soldQuantity: Integer
+        - availableQuantity: Integer
+        - updatedAt: DateTime
+        + deductStock(qty: Integer): Boolean
+        + replenishStock(qty: Integer): void
+        + isCriticalStock(threshold: Integer = 3): Boolean
+    }
+}
+
+package "Módulo de Despachos y Consignación" #FFF9C4 {
+    enum ConsignmentStatus {
+        PENDING
+        RECEIVED
+        OBSERVED
+    }
+
+    class Consignment {
+        - id: String
+        - dispatchCode: String
+        - targetBranchId: String
+        - dispatcherUserId: String
+        - receiverUserId: String
+        - status: ConsignmentStatus
+        - notes: String
+        - createdAt: DateTime
+        - receivedAt: DateTime
+        + confirmReception(receiverId: String): void
+        + registerDiscrepancy(notes: String): void
+    }
+
+    class ConsignmentItem {
+        - id: String
+        - consignmentId: String
+        - productId: String
+        - requestedQuantity: Integer
+        - receivedQuantity: Integer
+        - observations: String
+    }
+}
+
+package "Módulo Comercial y Liquidaciones" #FCE4EC {
+    enum PaymentMethod {
+        EFECTIVO
+        TRANSFERENCIA
+    }
+
+    enum SettlementStatus {
+        SUBMITTED
+        VERIFIED_BY_ADMIN
+    }
+
+    class Sale {
+        - id: String
+        - saleNumber: String
+        - clientSaleUuid: String
+        - branchId: String
+        - sellerUserId: String
+        - customerDni: String
+        - customerName: String
+        - totalAmount: Decimal
+        - paymentMethod: PaymentMethod
+        - isOffline: Boolean
+        - syncedAt: DateTime
+        - createdAt: DateTime
+        + addItem(product: Product, quantity: Integer): void
+        + calculateTotal(): Decimal
+        + generateTicketPDF(): Byte[]
+    }
+
+    class SaleItem {
+        - id: String
+        - saleId: String
+        - productId: String
+        - quantity: Integer
+        - unitPrice: Decimal
+        - fixedCommission: Decimal
+        - subtotal: Decimal
+        + getEditorialNet(): Decimal
+    }
+
+    class DailySettlement {
+        - id: String
+        - branchId: String
+        - settlerUserId: String
+        - settlementDate: Date
+        - totalSalesCount: Integer
+        - totalGrossIncome: Decimal
+        - totalDistributorCommission: Decimal
+        - totalNetForEditorial: Decimal
+        - status: SettlementStatus
+        - observations: String
+        - createdAt: DateTime
+        + calculateDailyBalance(): void
+        + submitForVerification(): void
+        + verifyByAdmin(): void
+    }
+}
+
+' Relaciones entre clases
+Role "1" <-- "0..*" User : posee
+Branch "1" <-- "0..*" User : asignado a
+
+Branch "1" *-- "0..*" BranchStock : contiene existencias
+Product "1" *-- "0..*" BranchStock : contabilizado en
+
+Branch "1" <-- "0..*" Consignment : destino
+User "1" <-- "0..*" Consignment : despachado por
+User "0..1" <-- "0..*" Consignment : recepcionado por
+Consignment "1" *-- "1..*" ConsignmentItem : detalla
+Product "1" <-- "0..*" ConsignmentItem : referencia
+
+Branch "1" <-- "0..*" Sale : registra en
+User "1" <-- "0..*" Sale : atendida por
+Sale "1" *-- "1..*" SaleItem : desglosa
+Product "1" <-- "0..*" SaleItem : incluye
+
+Branch "1" <-- "0..*" DailySettlement : corresponde a
+User "1" <-- "0..*" DailySettlement : liquidado por
+
+@enduml
